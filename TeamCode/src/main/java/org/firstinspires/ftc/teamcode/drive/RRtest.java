@@ -8,6 +8,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
@@ -20,16 +22,22 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.sequencesegment.Traject
 public class RRtest extends LinearOpMode {
     DcMotorEx motorLeft;
     DcMotorEx motorRight;
+    Servo claw;
     final int liftLow = 0;
     final int liftHigherThanLow = -600;
     final int liftMid = -900;
     final int liftHigh = -1200;
     Trajectory traj1;
-    TrajectorySequence traj2;
+    Trajectory traj2;
+    Trajectory traj3;
+    Trajectory traj4;
+    final double close = 0.7;
+    final double open =0;
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         motorLeft = hardwareMap.get(DcMotorEx.class, "LiftLeft");
         motorRight = hardwareMap.get(DcMotorEx.class, "LiftRight");
+        claw = hardwareMap.get(Servo.class, "claw");
         motorLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         motorRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -47,23 +55,39 @@ public class RRtest extends LinearOpMode {
         if (isStopRequested()) return;
         Pose2d StartPose = new Pose2d(-36, 64.5, Math.toRadians(270));
         drive.setPoseEstimate(StartPose);
-
+        // drive fwd ans close the cloaw
         traj1 = drive.trajectoryBuilder(StartPose)
                 .lineTo(new Vector2d(-36, 36))
-                .addDisplacementMarker(() -> {
-                    drive.followTrajectorySequence(traj2);
+                .addSpatialMarker(new Vector2d(-36, 36),() -> {
+                    claw(close);
                 })
                 .build();
-        traj2 = drive.trajectorySequenceBuilder(traj1.end())
+        // strafe left and raise arm
+        traj2 = drive.trajectoryBuilder(traj1.end())
                 .strafeTo(new Vector2d(-24, 36))
-                .addDisplacementMarker(() -> {
-                    ArmPosition(liftHigh);
+                .addSpatialMarker(new Vector2d(-24, 36),() -> {
+                    ArmPosition(liftMid);
                 })
-                .waitSeconds(5)
                 .build();
-
+        traj3 = drive.trajectoryBuilder(traj2.end())
+                .lineTo(new Vector2d(-24, 32))
+                .addSpatialMarker(new Vector2d(-24, 32),() -> {
+                    claw.setPosition(open);
+                })
+                .build();
+        traj4 = drive.trajectoryBuilder(traj3.end())
+                .lineTo(new Vector2d(-24, 36))
+                .addSpatialMarker(new Vector2d(-24, 36),() -> {
+                    ArmPosition(liftLow);
+                })
+                .build();
         drive.followTrajectory(traj1);
-        wait(5);
+        drive.followTrajectory(traj2);
+        drive.followTrajectory(traj3);
+        drive.followTrajectory(traj4);
+        while(opModeIsActive()) {
+            drive.update();
+        }
     }
     public void ArmPosition(int pos) {
         motorLeft.setPower(0);
@@ -74,5 +98,8 @@ public class RRtest extends LinearOpMode {
         motorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorLeft.setPower(1);
         motorRight.setPower(1);
+    }
+    public void claw(double pos) {
+        claw.setPosition(pos);
     }
 }
