@@ -11,10 +11,6 @@ import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 
 @TeleOp
 public class TeleOpLM2 extends LinearOpMode {
-    public enum IStates{
-        open,
-        close
-    }
 
     DcMotorEx motorLeft;
     DcMotorEx motorRight;
@@ -23,12 +19,15 @@ public class TeleOpLM2 extends LinearOpMode {
     final int liftMid = -900;
     final int liftHigh = -1200;
 
-    public IStates IntakeStates = IStates.open;
+    Servo claw;
+    final double closed = 0.7;
+    final double open =0;
+
 
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-        Servo claw = hardwareMap.get(Servo.class, "claw");
+        claw = hardwareMap.get(Servo.class, "claw");
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         motorLeft = hardwareMap.get(DcMotorEx.class, "LiftLeft");
@@ -46,16 +45,16 @@ public class TeleOpLM2 extends LinearOpMode {
         motorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         while (opModeInInit()) {
-            IntakeStates = IStates.open;
+            claw(open);
         }
         while (!isStopRequested()) {
             drive.setWeightedDrivePower(new Pose2d(-gamepad1.left_stick_y*.80, -gamepad1.left_stick_x*.80, -gamepad1.right_stick_x*.55)); drive.update();
             if(gamepad2.right_bumper) {
-                IntakeStates = IStates.close;
+                claw(closed);
                 gamepad1.rumble(500);
                 gamepad2.rumble(500);
             } else if(gamepad2.left_bumper){
-                IntakeStates = IStates.open;
+                claw(open);
                 gamepad1.rumble(500);
                 gamepad2.rumble(500);
             } else if(gamepad2.dpad_up) {
@@ -67,23 +66,6 @@ public class TeleOpLM2 extends LinearOpMode {
             }else if(gamepad2.dpad_right) {
                 ArmPosition(liftHigherThanLow);
             }
-            switch(IntakeStates) {
-                case open:
-                    claw.setPosition(0);
-                    if(gamepad2.right_bumper) {
-                        IntakeStates = IStates.close;
-                    }
-                    break;
-                case close:
-                    claw.setPosition(0.7);
-                    if(gamepad2.left_bumper ) {
-                        IntakeStates = IStates.open;
-                    }
-                    break;
-                default:
-                    break;
-            }
-            telemetry.update();
         }
     }
     public void ArmPosition(int pos) {
@@ -95,5 +77,8 @@ public class TeleOpLM2 extends LinearOpMode {
         motorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         motorLeft.setPower(1);
         motorRight.setPower(1);
+    }
+    public void claw(double pos) {
+        claw.setPosition(pos);
     }
 }
