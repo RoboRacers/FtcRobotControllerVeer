@@ -29,20 +29,12 @@ public class AutoopStateMachines extends LinearOpMode {
         STATE_POSITION_SP3
     }
 
-    //Setting Current state for each section to desired starting state
     public STATE_POSITION RobotPosition = STATE_POSITION.STATE_POSITION_SP9;
-
-
-    // Timer to increment servo. Servo increment to next position when timer reach a set value
-    // ElapsedTime timer_1 = new ElapsedTime(ElapsedTime.Resolution.MILLISECONDS);
 
     @Override
     public void runOpMode() {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-        // **********************************************************************
-        // April Tag detection Code
-        // **********************************************************************
         OpenCvCamera camera;
         int cameraMonitorViewId = hardwareMap.appContext.getResources().
                 getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -58,10 +50,8 @@ public class AutoopStateMachines extends LinearOpMode {
         telemetry.addData("# Detecting AprilTag ","");
         telemetry.update();
 
-        // We are settting the robot position to Position 2, just because all of them are the same
         RobotPosition = STATE_POSITION.STATE_POSITION_SP2;
         while(!isStopRequested() && !opModeIsActive()) {
-            // Repeatedly update the signal ID with new detections from init to opmode start
             tagID = mySignalDetection.CheckSignal();
             telemetry.addData("# Tag ID: ", tagID);
             telemetry.addData("Position selected ", RobotPosition);
@@ -119,12 +109,4 @@ public class AutoopStateMachines extends LinearOpMode {
 
         }
     }
-
-    /*
-    public void ServoControl(Servo servoControl, double direction) {
-        if(timer_1.milliseconds() >= 100) {
-            servoControl.setPosition(servoControl.getPosition()+direction);
-            timer_1.reset();
-        }
-    }*/
 }
