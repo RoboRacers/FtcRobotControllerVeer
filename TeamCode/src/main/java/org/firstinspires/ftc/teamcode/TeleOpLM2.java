@@ -70,7 +70,7 @@ public class TeleOpLM2 extends LinearOpMode {
             }else if(gamepad2.dpad_right) {
                 ArmPosition(liftHigherThanLow);
             }else if(gamepad2.b) {
-                lower = pos - 100;
+                lower = pos - 50;
                 ArmManualRetract();
             }
         }
