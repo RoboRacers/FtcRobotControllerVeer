@@ -55,14 +55,12 @@ public class RRtest extends LinearOpMode {
         if (isStopRequested()) return;
         Pose2d StartPose = new Pose2d(-36, 64.5, Math.toRadians(270));
         drive.setPoseEstimate(StartPose);
-        // drive fwd ans close the cloaw
         traj1 = drive.trajectoryBuilder(StartPose)
                 .lineTo(new Vector2d(-36, 36))
                 .addSpatialMarker(new Vector2d(-36, 36),() -> {
                     claw(close);
                 })
                 .build();
-        // strafe left and raise arm
         traj2 = drive.trajectoryBuilder(traj1.end())
                 .strafeTo(new Vector2d(-24, 36))
                 .addSpatialMarker(new Vector2d(-24, 36),() -> {
