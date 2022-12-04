@@ -19,6 +19,9 @@ public class TeleOpLM2 extends LinearOpMode {
     final int liftMid = -900;
     final int liftHigh = -1200;
 
+    int lower;
+    int pos;
+
     Servo claw;
     final double closed = 0.7;
     final double open =0;
@@ -27,8 +30,9 @@ public class TeleOpLM2 extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-        claw = hardwareMap.get(Servo.class, "claw");
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        claw = hardwareMap.get(Servo.class, "claw");
 
         motorLeft = hardwareMap.get(DcMotorEx.class, "LiftLeft");
         motorRight = hardwareMap.get(DcMotorEx.class, "LiftRight");
@@ -65,6 +69,9 @@ public class TeleOpLM2 extends LinearOpMode {
                 ArmPosition(liftMid);
             }else if(gamepad2.dpad_right) {
                 ArmPosition(liftHigherThanLow);
+            }else if(gamepad2.b) {
+                lower = pos - 100;
+                ArmManualRetract();
             }
         }
     }
@@ -78,7 +85,17 @@ public class TeleOpLM2 extends LinearOpMode {
         motorLeft.setPower(1);
         motorRight.setPower(1);
     }
-    public void claw(double pos) {
-        claw.setPosition(pos);
+    public void ArmManualRetract() {
+        motorLeft.setPower(0);
+        motorRight.setPower(0);
+        motorRight.setTargetPosition(lower);
+        motorLeft.setTargetPosition(lower);
+        motorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorLeft.setPower(1);
+        motorRight.setPower(1);
+    }
+    public void claw(double posclaw) {
+        claw.setPosition(posclaw);
     }
 }
