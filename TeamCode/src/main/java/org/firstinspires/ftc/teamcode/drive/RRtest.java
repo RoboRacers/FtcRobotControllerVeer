@@ -35,9 +35,11 @@ public class RRtest extends LinearOpMode {
     final double open =0;
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+
         motorLeft = hardwareMap.get(DcMotorEx.class, "LiftLeft");
         motorRight = hardwareMap.get(DcMotorEx.class, "LiftRight");
         claw = hardwareMap.get(Servo.class, "claw");
+
         motorLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         motorRight.setDirection(DcMotorSimple.Direction.REVERSE);
 
