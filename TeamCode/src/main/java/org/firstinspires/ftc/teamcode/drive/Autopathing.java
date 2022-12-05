@@ -19,7 +19,7 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.sequencesegment.Traject
  * This is an example of a more complex path to really test the tuning.
  */
 @Autonomous(group = "drive")
-public class RRtest extends LinearOpMode {
+public class Autopathing extends LinearOpMode {
     DcMotorEx motorLeft;
     DcMotorEx motorRight;
     Servo claw;
@@ -58,30 +58,29 @@ public class RRtest extends LinearOpMode {
         if (isStopRequested()) return;
         Pose2d StartPose = new Pose2d(-36, 64.5, Math.toRadians(270));
         drive.setPoseEstimate(StartPose);
-
         traj1 = drive.trajectoryBuilder(StartPose)
-                .lineTo(new Vector2d(-36, 20))
-               // .addSpatialMarker(new Vector2d(-36, 20),() -> {
-                // claw(close);
-                //})
+                .lineTo(new Vector2d(-36, 36))
+                .addSpatialMarker(new Vector2d(-36, 36),() -> {
+                    claw(close);
+                })
                 .build();
         traj2 = drive.trajectoryBuilder(traj1.end())
-                .lineToLinearHeading(new Pose2d(-28, 2, Math.toRadians(-30)))
-               //.addSpatialMarker(new Vector2d(-24, 26),() -> {
-                 //ArmPosition(liftHigh);
-                //})
+                .strafeTo(new Vector2d(-24, 36))
+                .addSpatialMarker(new Vector2d(-24, 36),() -> {
+                    ArmPosition(liftMid);
+                })
                 .build();
         traj3 = drive.trajectoryBuilder(traj2.end())
-                .lineToConstantHeading(new Vector2d(-34, 13))
-                //.addSpatialMarker(new Vector2d(-24, 32),() -> {
-                    //claw.setPosition(open);
-               // })
+                .lineTo(new Vector2d(-24, 32))
+                .addSpatialMarker(new Vector2d(-24, 32),() -> {
+                    claw.setPosition(open);
+                })
                 .build();
         traj4 = drive.trajectoryBuilder(traj3.end())
-                .lineToLinearHeading(new Pose2d(-60, 13, Math.toRadians(-180)))
-                //.addSpatialMarker(new Vector2d(-24, 36),() -> {
-                //    ArmPosition(liftLow);
-                //})
+                .lineTo(new Vector2d(-24, 36))
+                .addSpatialMarker(new Vector2d(-24, 36),() -> {
+                    ArmPosition(liftLow);
+                })
                 .build();
         drive.followTrajectory(traj1);
         drive.followTrajectory(traj2);
@@ -89,13 +88,7 @@ public class RRtest extends LinearOpMode {
         drive.followTrajectory(traj4);
         while(opModeIsActive()) {
             drive.update();
-
-            Pose2d poseEstimate = drive.getPoseEstimate();
-            telemetry.addData("x", poseEstimate.getX());
-            telemetry.addData("y", poseEstimate.getY());
-            telemetry.addData("heading", poseEstimate.getHeading());
-            telemetry.addData("Wheel Locations: ", drive.getWheelPositions());
-            telemetry.update();        }
+        }
     }
     public void ArmPosition(int pos) {
         motorLeft.setPower(0);
