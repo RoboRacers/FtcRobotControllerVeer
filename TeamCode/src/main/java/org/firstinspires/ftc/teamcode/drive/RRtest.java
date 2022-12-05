@@ -27,6 +27,7 @@ public class RRtest extends LinearOpMode {
     final int liftHigherThanLow = -600;
     final int liftMid = -900;
     final int liftHigh = -1200;
+    final int highstackpreset = -400;
     Trajectory traj1;
     Trajectory traj2;
     Trajectory traj3;
