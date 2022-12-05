@@ -95,7 +95,8 @@ public class RRtest extends LinearOpMode {
             telemetry.addData("y", poseEstimate.getY());
             telemetry.addData("heading", poseEstimate.getHeading());
             telemetry.addData("Wheel Locations: ", drive.getWheelPositions());
-            telemetry.update();        }
+            telemetry.update();
+        }
     }
     public void ArmPosition(int pos) {
         motorLeft.setPower(0);
