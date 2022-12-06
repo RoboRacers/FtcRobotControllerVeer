@@ -24,7 +24,7 @@ public class TeleOpLM2 extends LinearOpMode {
     int higher;
     Servo claw;
     final double closed = 0.7;
-    final double open =0;
+    final double open = 0;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -51,26 +51,28 @@ public class TeleOpLM2 extends LinearOpMode {
             claw(open);
         }
         while (!isStopRequested()) {
-            drive.setWeightedDrivePower(new Pose2d(-gamepad1.left_stick_y*.80, -gamepad1.left_stick_x*.80, -gamepad1.right_stick_x*.7)); drive.update();
-            if(gamepad2.right_bumper) {
+            drive.setWeightedDrivePower(new Pose2d(-gamepad1.left_stick_y * .80, -gamepad1.left_stick_x * .80, -gamepad1.right_stick_x * .7));
+            drive.update();
+            if (gamepad2.right_bumper) {
                 claw(closed);
-            } else if(gamepad2.left_bumper){
+            } else if (gamepad2.left_bumper) {
                 claw(open);
-            } else if(gamepad2.dpad_up) {
+            } else if (gamepad2.dpad_up) {
                 ArmPosition(liftHigh);
-            } else if(gamepad2.dpad_down) {
+            } else if (gamepad2.dpad_down) {
                 ArmPosition(liftLow);
-            }else if(gamepad2.dpad_left) {
+            } else if (gamepad2.dpad_left) {
                 ArmPosition(liftMid);
-            }else if(gamepad2.dpad_right) {
+            } else if (gamepad2.dpad_right) {
                 ArmPosition(liftHigherThanLow);
-            }else if(gamepad2.b) {
+            } else if (gamepad2.b) {
                 ArmManualRetract();
-            }else if(gamepad2.a) {
+            } else if (gamepad2.a) {
                 ArmManualExtend();
             }
         }
     }
+
     public void ArmPosition(int pos) {
         motorLeft.setPower(0);
         motorRight.setPower(0);
@@ -81,6 +83,7 @@ public class TeleOpLM2 extends LinearOpMode {
         motorLeft.setPower(1);
         motorRight.setPower(1);
     }
+
     public void ArmManualRetract() {
         pos = motorLeft.getCurrentPosition();
         lower = pos + 50;
@@ -93,6 +96,7 @@ public class TeleOpLM2 extends LinearOpMode {
         motorLeft.setPower(1);
         motorRight.setPower(1);
     }
+
     public void ArmManualExtend() {
         pos = motorLeft.getCurrentPosition();
         higher = pos - 50;
@@ -105,6 +109,7 @@ public class TeleOpLM2 extends LinearOpMode {
         motorLeft.setPower(1);
         motorRight.setPower(1);
     }
+
     public void claw(double posclaw) {
         claw.setPosition(posclaw);
         gamepad1.rumble(500);
