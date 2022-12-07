@@ -15,6 +15,7 @@ public class TeleOpLM2 extends LinearOpMode {
     DcMotorEx motorLeft;
     DcMotorEx motorRight;
     final int liftLow = 0;
+    final int dontBreak = -200;
     final int liftHigherThanLow = -600;
     final int liftMid = -900;
     final int liftHigh = -1200;
@@ -83,7 +84,15 @@ public class TeleOpLM2 extends LinearOpMode {
         motorLeft.setPower(1);
         motorRight.setPower(1);
     }
-
+    public void DontBreakArmAndRetract() {
+        motorLeft.setPower(0);
+        motorRight.setPower(0);
+        motorRight.setTargetPosition(dontBreak);
+        motorLeft.setTargetPosition(dontBreak);
+        motorLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        motorLeft.setPower(1);
+    }
     public void ArmManualRetract() {
         pos = motorLeft.getCurrentPosition();
         lower = pos + 50;
