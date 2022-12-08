@@ -61,7 +61,10 @@ public class TeleOpLM2 extends LinearOpMode {
             } else if (gamepad2.dpad_up) {
                 ArmPosition(liftHigh);
             } else if (gamepad2.dpad_down) {
-                ArmPosition(liftLow);
+                DontBreakArmAndRetract();
+                if(motorRight.getCurrentPosition() + 10 < dontBreak || motorRight.getCurrentPosition() - 10 > dontBreak) {
+                    ArmPosition(liftLow);
+                }
             } else if (gamepad2.dpad_left) {
                 ArmPosition(liftMid);
             } else if (gamepad2.dpad_right) {
