@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -63,7 +64,7 @@ public class TeleOpLM2 extends LinearOpMode {
                 ArmPosition(liftHigh);
             } else if (gamepad2.dpad_down) {
                 DontBreakArmAndRetract();
-                if(motorRight.getCurrentPosition() + 10 < dontBreak || motorRight.getCurrentPosition() - 10 > dontBreak) {
+                if(motorRight.getCurrentPosition() + 100 < dontBreak || motorRight.getCurrentPosition() - 100 > dontBreak) {
                     ArmPosition(liftLow);
                 }
             } else if (gamepad2.dpad_left) {
